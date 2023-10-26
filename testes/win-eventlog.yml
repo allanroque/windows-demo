@@ -4,13 +4,6 @@
   gather_facts: no 
   tasks:
 
-  - name: Add a new event log Ansible
-    community.windows.win_eventlog:
-      name: Ansible
-      sources:
-        - Ansible
-      state: present
-
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
       log: Ansible
@@ -18,5 +11,5 @@
       event_id: 5555
       message: "Ansible Action"
       entry_type: Warning
-      category: 5
-      raw_data: 10,20
+#      category: 5
+#      raw_data: 10,20
