@@ -5,10 +5,10 @@
   tasks:
     - name: Create Custom Event Log
       win_shell: |
-        New-EventLog -LogName "Ansible" -Source "Ansible"
+        New-EventLog -LogName "MyCustomLog" -Source "MyCustomSource"
       ignore_errors: yes  # Ignora erros se o log já existir
 
     - name: Add Entry to Custom Event Log
       win_shell: |
-        Write-EventLog -LogName "Ansible" -Source "Ansible" -EventId 5555 -EntryType Warning -Message "Ansible Action"
+        Write-EventLog -LogName "MyCustomLog" -Source "MyCustomSource" -EventId 5555 -EntryType Warning -Message "Custom Action"
       ignore_errors: yes  # Ignora erros se a entrada já existir
