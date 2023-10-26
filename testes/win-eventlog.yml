@@ -4,17 +4,15 @@
   gather_facts: no 
   tasks:
 
-  - name: Write an entry to a Windows event log
-    community.windows.win_eventlog_entry:
-      log: MyNewLog
-      source: NewLogSource1
-      event_id: 1234
-      message: This is a test log entry.
+  - name: Add a new event log with two custom sources
+    community.windows.win_eventlog:
+      name: Ansible
+      state: present
 
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
-      log: Ansible result
-      source: System
+      log: Ansible
+      source: Ansible
       event_id: 5555
       message: "Ansible Action"
       entry_type: Warning
