@@ -29,6 +29,6 @@
     - name: Write entry to custom event log
       community.windows.win_eventlog_entry:
         log: Windows PowerShell
-        source: Ansible
+        source: null
         event_id: 1234
         message: This is a test log entry.
