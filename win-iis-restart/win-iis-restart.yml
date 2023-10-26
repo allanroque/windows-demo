@@ -17,7 +17,7 @@
 #      register: logged_in_users
 
     - name: Get Event Logs Info
-      win_shell: Get-WinEventLog -LogName '*'
+      win_shell: Get-WinEvent -LogName '*'
       register: event_logs_info
       changed_when: false
 
