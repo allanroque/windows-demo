@@ -7,6 +7,7 @@
   - name: Add a new event log with two custom sources
     community.windows.win_eventlog:
       name: Ansible
+      source: Ansible
       state: present
 
   - name: Add Ansible log to a Windows event log
