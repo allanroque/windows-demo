@@ -6,7 +6,7 @@
 
     - name: Write entry to custom event log
       community.windows.win_eventlog_entry:
-        log: MyCustomLog
+        log: Ansible
         source: MyCustomSource
         event_id: 1234
         message: This is a test log entry.
