@@ -1,0 +1,26 @@
+---
+- name: Restart IIS Web Server
+  hosts: windows
+  gather_facts: no 
+
+  tasks:
+
+########
+# Adicionar enriquecimento dos logs e informações, essas informações podem ser enviadas para o incidente
+# informacoes do incidente numero
+
+    - name: Coletar os últimos logs do sistema
+      win_shell: |
+        Get-WinEvent -LogName System -MaxEvents 10 | Format-Table -AutoSize
+      register: system_logs
+      changed_when: false  # Definir como false para que não marque como alterado
+
+    - name: Exibir os últimos logs do sistema
+      debug:
+        var: system_logs.stdout_lines
+
+    - name: Start IIS Service
+      win_service:
+        name: W3SVC
+        start_mode: auto
+
