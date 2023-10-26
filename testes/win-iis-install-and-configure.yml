@@ -4,9 +4,9 @@
 ---
 - name: Instalação e Configuração do IIS
   hosts: windows
-  tasks:
   vars:
     apache_test: "Ansible!!!!"
+  tasks:
     - name: Instalar o IIS
       win_feature:
         name: Web-Server
