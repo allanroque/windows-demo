@@ -12,7 +12,7 @@
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
-      
+
     - name: Obter informações do serviço IIS (W3SVC)
       win_shell: Get-Service W3SVC
       register: iis_service_info
@@ -21,14 +21,14 @@
       debug:
         var: iis_service_info.stdout
 
-    - name: Listar logs do serviço IIS (W3SVC)
-      win_shell: Get-WinEvent -LogName 'Microsoft-Windows-IIS-Logging/Operational'
-      register: iis_logs_info
+    - name: Listar todos os logs de eventos
+      win_shell: Get-WinEvent -ListLog *
+      register: event_logs_info
 
-    - name: Exibir informações dos logs do serviço IIS (W3SVC)
+    - name: Exibir informações dos logs de eventos
       debug:
-        var: iis_logs_info.stdout
-
+        var: event_logs_info.stdout
+        
     - name: Coletar os últimos logs do sistema
       win_shell: |
         Get-WinEvent -LogName System -MaxEvents 10 | Format-Table -AutoSize
