@@ -13,8 +13,8 @@
         name: W3SVC
       register: service_info
     - name: Listar eventos de erro
-    
-      win_shell: Get-WinEvent -LogName 'LogName' -ErrorAction SilentlyContinue | Where-Object { $_.Level -ge 2 } | Select-Object -First 10 | Format-Table -AutoSize
+
+      win_shell: Get-WinEvent -LogName 'LogName' -ErrorAction SilentlyContinue
       register: error_logs
       failed_when: false  # Ignora erros se o log especificado não existir
 
