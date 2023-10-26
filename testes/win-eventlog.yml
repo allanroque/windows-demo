@@ -4,9 +4,16 @@
   gather_facts: no 
   tasks:
 
+  - name: Add a new event log with two custom sources
+    community.windows.win_eventlog:
+      name: Ansible
+      sources:
+        - Ansible
+      state: present
+
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
-      log: System
+      log: Ansible
       source: Ansible
       event_id: 5555
       message: "Ansible Action"
