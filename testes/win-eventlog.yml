@@ -10,7 +10,6 @@
       source: NewLogSource1
       event_id: 1234
       message: This is a test log entry.
-    become: yes
 
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
