@@ -8,27 +8,30 @@
 # Adicionar enriquecimento dos logs e informações, essas informações podem ser enviadas para o incidente
 # informacoes do incidente numero
 
+    - name: Listar usuários logados
+      win_shell: |
+        quser
+      register: logged_in_users
+
+    - name: Listar últimos usuários logados
+      win_shell: |
+        Get-WinEvent -LogName 'Security' -FilterXPath "*[System[(EventID=4624)]]" | ForEach-Object { $_.Properties[5].Value } | Select-Object -Unique
+      register: last_logged_in_users
+      failed_when: false  # Ignora erros se o log 'Security' não existir
+
+    - name: Exibir usuários logados
+      debug:
+        var: logged_in_users.stdout_lines
+
+    - name: Exibir últimos usuários logados
+      debug:
+        var: last_logged_in_users.stdout_lines
+
     - name: Get info for a single service
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
     - name: Listar eventos de erro
-
-      win_shell: Get-WinEvent -LogName 'LogName' -ErrorAction SilentlyContinue
-      register: error_logs
-      failed_when: false  # Ignora erros se o log especificado não existir
-
-    - name: Exibir eventos de erro
-      debug:
-        var: error_logs.stdout_lines
-
-    - name: Obter informações do serviço IIS (W3SVC)
-      win_shell: Get-Service W3SVC
-      register: iis_service_info
-
-    - name: Exibir informações do serviço IIS (W3SVC)
-      debug:
-        var: iis_service_info.stdout
 
     - name: Listar todos os logs de eventos
       win_shell: Get-WinEvent -ListLog *
