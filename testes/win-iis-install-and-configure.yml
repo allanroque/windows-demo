@@ -16,8 +16,8 @@
         state: present
 
     - name: Colocar o arquivo index.html no servidor
-      win_copy:
-        src: index.html
+      win_template:
+        src: index.j2
         dest: C:\inetpub\wwwroot\index.html
 
     - name: Criar Pool de Aplicativos
