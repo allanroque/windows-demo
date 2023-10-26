@@ -4,20 +4,9 @@
   gather_facts: no
   tasks:
 
-    - name: Check if Ansible log exists
-      win_shell: |
-        Get-EventLog -LogName "Ansible" -ErrorAction SilentlyContinue
-      register: ansible_log_check
-      changed_when: false
-      ignore_errors: yes  # Ignora erros se o log já existir
-
-
-    - name: Create Custom Event Log
-      win_shell: |
-        New-EventLog -LogName "MyCustomLog" -Source "MyCustomSource"
-      ignore_errors: yes  # Ignora erros se o log já existir
-
-    - name: Add Entry to Custom Event Log
-      win_shell: |
-        Write-EventLog -LogName "Ansible" -Source "Ansible" -EventId 5555 -EntryType Warning -Message "Ansible Action"
-      ignore_errors: yes  # Ignora erros se a entrada já existir
+    - name: Write entry to custom event log
+      community.windows.win_eventlog_entry:
+        log: MyCustomLog
+        source: MyCustomSource
+        event_id: 1234
+        message: This is a test log entry.
