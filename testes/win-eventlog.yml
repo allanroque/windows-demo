@@ -4,13 +4,13 @@
   gather_facts: no 
   tasks:
 
-  - name: Write 'result.stdout' to Windows Event Log
+  - name: Write an entry to a Windows event log
     community.windows.win_eventlog_entry:
-      log: Result of win_command
-      source: Ansible module win_command
+      log: MyNewLog
+      source: NewLogSource1
       event_id: 1234
-      message: "Test"
-
+      message: This is a test log entry.
+      
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
       log: Ansible result
