@@ -1,20 +1,13 @@
 ---
-- name: Restart IIS Web Server
+- name: Create Ansible Windows event log
   hosts: windows
   gather_facts: no 
   tasks:
 
-  - name: Add a new event log with two custom sources
-    community.windows.win_eventlog:
-      name: Ansible
-      sources:
-        - Ansible
-      state: present
-
   - name: Add Ansible log to a Windows event log
     community.windows.win_eventlog_entry:
       log: Ansible
-      source: Ansible
+      source: System
       event_id: 5555
       message: "Ansible Action"
       entry_type: Warning
