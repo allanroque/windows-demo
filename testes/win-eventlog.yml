@@ -1,21 +1,14 @@
 ---
-- name: Create Ansible Windows event log and entry
+- name: Create Custom Event Log and Add Entry
   hosts: windows
-  gather_facts: no 
+  gather_facts: no
   tasks:
-    - name: Create Ansible log in Windows event logs
-      community.windows.win_eventlog:
-        name: Ansible
-        sources:
-          - Ansible
-        state: present
+    - name: Create Custom Event Log
+      win_shell: |
+        New-EventLog -LogName "MyCustomLog" -Source "MyCustomSource"
+      ignore_errors: yes  # Ignora erros se o log já existir
 
-    - name: Add Ansible log entry to Windows event log
-      community.windows.win_eventlog_entry:
-        log: Ansible
-        source: Ansible
-        event_id: 5555
-        message: "Ansible Action"
-        entry_type: Warning
-        category: 5
-        raw_data: 10,20
+    - name: Add Entry to Custom Event Log
+      win_shell: |
+        Write-EventLog -LogName "MyCustomLog" -Source "MyCustomSource" -EventId 5555 -EntryType Warning -Message "Custom Action"
+      ignore_errors: yes  # Ignora erros se a entrada já existir
