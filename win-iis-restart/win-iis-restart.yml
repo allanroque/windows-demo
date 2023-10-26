@@ -12,6 +12,15 @@
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
+    - name: Listar eventos de erro
+    
+      win_shell: Get-WinEvent -LogName 'LogName' -ErrorAction SilentlyContinue | Where-Object { $_.Level -ge 2 } | Select-Object -First 10 | Format-Table -AutoSize
+      register: error_logs
+      failed_when: false  # Ignora erros se o log especificado não existir
+
+    - name: Exibir eventos de erro
+      debug:
+        var: error_logs.stdout_lines
 
     - name: Obter informações do serviço IIS (W3SVC)
       win_shell: Get-Service W3SVC
@@ -28,7 +37,7 @@
     - name: Exibir informações dos logs de eventos
       debug:
         var: event_logs_info.stdout
-        
+
     - name: Coletar os últimos logs do sistema
       win_shell: |
         Get-WinEvent -LogName System -MaxEvents 10 | Format-Table -AutoSize
