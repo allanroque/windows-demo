@@ -2,33 +2,19 @@
 - name: Create Custom Event Log and Add Entry
   hosts: windows
   gather_facts: no
+  vars:
+    eventlog_log: MyCustomLog
+    eventlog_source: MyCustomLog
+    eventlog_msg: "Ansible Action!!!"
   tasks:
-    - name: Executar script PowerShell para obter logs de eventos e fontes
-      win_shell: |
-        $eventLogs = Get-EventLog -List
-        $logData = @()
-
-        foreach ($log in $eventLogs) {
-            $logInfo = @{
-                LogName = $log.Log
-                MaximumSizeKB = $log.MaximumKilobytes
-                OverflowAction = $log.OverflowAction
-                RetentionDays = $log.MinimumRetentionDays
-                Sources = $log.Sources
-            }
-            $logData += $logInfo
-        }
-
-        $logData | ConvertTo-Json
-      register: event_log_info
-
-    - name: Exibir informações dos logs de eventos e fontes
-      debug:
-        var: event_log_info.stdout_lines
 
     - name: Write entry to custom event log
       community.windows.win_eventlog_entry:
-        log: Ansible
-        source: null
-        event_id: 1234
-        message: This is a test log entry.
+        log: "{{ eventlog_log }}"
+        source: "{{ eventlog_source }}"
+        event_id: 5555
+        message: "{{ eventlog_msg }}"
+        entry_type: Warning
+        category: 5
+        raw_data: 10,20
+      ignore_errors: yes  # Ignora erros
