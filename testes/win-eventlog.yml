@@ -3,10 +3,28 @@
   hosts: windows
   gather_facts: no
   tasks:
+    - name: Executar script PowerShell para obter logs de eventos e fontes
+      win_shell: |
+        $eventLogs = Get-EventLog -List
+        $logData = @()
 
-    - name: Get-EventLog -List
-      win_shell: Get-EventLog -List
-      ignore_errors: yes  # Ignora erros se a entrada já existir
+        foreach ($log in $eventLogs) {
+            $logInfo = @{
+                LogName = $log.Log
+                MaximumSizeKB = $log.MaximumKilobytes
+                OverflowAction = $log.OverflowAction
+                RetentionDays = $log.MinimumRetentionDays
+                Sources = $log.Sources
+            }
+            $logData += $logInfo
+        }
+
+        $logData | ConvertTo-Json
+      register: event_log_info
+
+    - name: Exibir informações dos logs de eventos e fontes
+      debug:
+        var: event_log_info.stdout_lines
 
     - name: Write entry to custom event log
       community.windows.win_eventlog_entry:
