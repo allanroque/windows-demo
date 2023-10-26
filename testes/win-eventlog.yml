@@ -5,8 +5,7 @@
   tasks:
 
     - name: Get-EventLog -List
-      win_shell: |
-        Write-EventLog -LogName "MyCustomLog" -Source "MyCustomSource" -EventId 5555 -EntryType Warning -Message "Custom Action"
+      win_shell: Get-EventLog -List
       ignore_errors: yes  # Ignora erros se a entrada já existir
 
     - name: Write entry to custom event log
