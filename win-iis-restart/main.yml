@@ -8,6 +8,11 @@
 # Adicionar enriquecimento dos logs e informações, essas informações podem ser enviadas para o incidente
 # informacoes do incidente numero
 
+    - name: Get info for a single service
+      win_service_info:
+        name: W3SVC
+      register: service_info
+
     - name: Coletar os últimos logs do sistema
       win_shell: |
         Get-WinEvent -LogName System -MaxEvents 10 | Format-Table -AutoSize
