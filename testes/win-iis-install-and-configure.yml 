@@ -1,0 +1,46 @@
+---
+#playbook para teste de lab
+- name: Instalação e Configuração do IIS
+  hosts: windows
+  tasks:
+    - name: Instalar o IIS
+      win_feature:
+        name: Web-Server
+        state: present
+
+    - name: Instalar Recursos de Gerenciamento do IIS
+      win_feature:
+        name: Web-Mgmt-Console
+        state: present
+
+    - name: Colocar o arquivo index.html no servidor
+      win_copy:
+        src: index.html
+        dest: C:\inetpub\wwwroot\index.html
+
+    - name: Criar Pool de Aplicativos
+      community.windows.win_iis_webapppool:
+        name: MyAppPool
+        state: present
+ 
+    - name: Criar diretório do site
+      win_file:
+        path: C:\inetpub\wwwroot\meusite
+        state: directory
+
+    - name: Criar Site no IIS
+      community.windows.win_iis_website:
+        name: MyWebsite
+        state: started
+        bindings:
+          - protocol: http
+            ip_address: "*"
+            port: 80
+        application_pool: MyAppPool
+        physical_path: C:\inetpub\wwwroot\meusite  # Especifique o caminho correto aqui
+        state: started
+      ignore_errors: yes
+
+    - name: Show website address
+      ansible.builtin.debug:
+        msg: http://{{ ansible_host }}
