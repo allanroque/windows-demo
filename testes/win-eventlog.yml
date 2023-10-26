@@ -4,10 +4,10 @@
   gather_facts: no 
   tasks:
 
-  - name: Add a new event log with two custom sources
+  - name: Add a new event log Ansible
     community.windows.win_eventlog:
       name: Ansible
-      source:
+      sources:
         - Ansible
       state: present
 
