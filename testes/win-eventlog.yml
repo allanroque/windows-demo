@@ -1,15 +1,21 @@
 ---
-- name: Create Ansible Windows event log
+- name: Create Ansible Windows event log and entry
   hosts: windows
   gather_facts: no 
   tasks:
+    - name: Create Ansible log in Windows event logs
+      community.windows.win_eventlog:
+        name: Ansible
+        sources:
+          - Ansible
+        state: present
 
-  - name: Add Ansible log to a Windows event log
-    community.windows.win_eventlog_entry:
-      log: Ansible
-      source: Ansible
-      event_id: 5555
-      message: "Ansible Action"
-      entry_type: Warning
-#      category: 5
-#      raw_data: 10,20
+    - name: Add Ansible log entry to Windows event log
+      community.windows.win_eventlog_entry:
+        log: Ansible
+        source: Ansible
+        event_id: 5555
+        message: "Ansible Action"
+        entry_type: Warning
+        category: 5
+        raw_data: 10,20
