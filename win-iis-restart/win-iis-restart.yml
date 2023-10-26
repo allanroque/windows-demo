@@ -16,6 +16,26 @@
 #        quser
 #      register: logged_in_users
 
+    - name: Get Event Logs Info
+      win_shell: Get-WinEventLog -LogName '*'
+      register: event_logs_info
+      changed_when: false
+
+    - name: Filter and Display Relevant Logs
+      debug:
+        var: item
+      loop: "{{ event_logs_info.stdout_lines }}"
+      when:
+        - "'Error' in item"               # Logs with 'Error'
+        - "'Warning' in item"             # Logs with 'Warning'
+        - "'Application' in item"         # Application log
+        - "'Security' in item"            # Security log
+        - "'System' in item"              # System log
+        - "'MyCustomLog' in item"         # Custom log
+        - "'Microsoft-IIS-Logging' in item" # IIS log
+        - "'Windows PowerShell' in item"  # PowerShell log
+        - "'ForwardedEvents' in item"     # Forwarded events log
+        
     - name: Listar usuários logados
       win_shell: |
         $logged_in_users = quser 2>&1
@@ -42,10 +62,6 @@
     - name: Exibir usuários logados
       debug:
         var: logged_in_users_result.stdout_lines
-
-    - name: Exibir últimos usuários logados
-      debug:
-        var: last_logged_in_users_result.stdout_lines
 
     - name: Get info for a single service
       ansible.windows.win_service_info:
