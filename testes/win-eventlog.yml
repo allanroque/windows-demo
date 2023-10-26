@@ -1,0 +1,15 @@
+---
+- name: Restart IIS Web Server
+  hosts: windows
+  gather_facts: no 
+  tasks:
+
+  - name: Add Ansible log to a Windows event log
+    community.windows.win_eventlog_entry:
+      log: Ansible
+      source: Ansible
+      event_id: 5555
+      message: "Ansible Action"
+      entry_type: Warning
+      category: 5
+      raw_data: 10,20
