@@ -7,6 +7,9 @@
 ########
 # Adicionar enriquecimento dos logs e informações, essas informações podem ser enviadas para o incidente
 # informacoes do incidente numero
+# usuarios logados
+# validar DNS
+#
 
     - name: Listar usuários logados
       win_shell: |
@@ -31,7 +34,6 @@
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
-    - name: Listar eventos de erro
 
     - name: Listar todos os logs de eventos
       win_shell: Get-WinEvent -ListLog *
