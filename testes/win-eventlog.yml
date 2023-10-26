@@ -9,7 +9,9 @@
         Get-EventLog -LogName "Ansible" -ErrorAction SilentlyContinue
       register: ansible_log_check
       changed_when: false
-      
+      ignore_errors: yes  # Ignora erros se o log já existir
+
+
     - name: Create Custom Event Log
       win_shell: |
         New-EventLog -LogName "MyCustomLog" -Source "MyCustomSource"
