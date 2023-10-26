@@ -11,10 +11,10 @@
 # validar DNS
 #
 
-    - name: Listar usuários logados
-      win_shell: |
-        quser
-      register: logged_in_users
+#    - name: Listar usuários logados
+#      win_shell: |
+#        quser
+#      register: logged_in_users
 
     - name: Listar usuários logados
       win_shell: |
