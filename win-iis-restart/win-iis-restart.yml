@@ -31,7 +31,7 @@
         file: ../win-troubleshooting/task-win-write-eventlog.yml
   
     - name: Definir informações em uma variavel
-      set_facts:
+      set_fact:
         status_automacao: |-
           ################################################
           #              STATUS DA ATIVIDADE             #
@@ -47,3 +47,4 @@
     - name: Exibir banner
       debug:
         msg: "{{ status_automacao.split('\n') }}" 
+      vars:
