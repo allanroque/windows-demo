@@ -1,16 +1,31 @@
 ---
 - name: Restart IIS Web Server
   hosts: windows
-  gather_facts: no 
+  gather_facts: no
+  vars:
+    iis: true
+    eventlog_log: MyCustomLog
+    eventlog_source: MyCustomLog
+    eventlog_msg: "Ansible Action - Restart IIS Web Server - Numero do Alerta {{ num_alerta }}"
+    num_alerta: "00000"
   tasks:
 
-    - name: Get info for a single service
+# Comente ou remova o bloco abaixo caso nao utilize a coleta de logs
+    - name: Chamada de automacao especifica para coleta de logs
+      ansible.builtin.include_tasks:
+        file: win-troubleshooting/task-win-eventlog.yml
+
+    - name: Coleta as informações do servico W3SVC IIS 
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
 
-    - name: Start IIS Service
+    - name: Restart do IIS Service
       win_service:
         name: W3SVC
         state: restarted
+      register: service_restart
 
+    - name: Chamada de automação para escrita de logs no windows
+      ansible.builtin.include_tasks:
+        file: win-troubleshooting/task-win-eventlog.yml

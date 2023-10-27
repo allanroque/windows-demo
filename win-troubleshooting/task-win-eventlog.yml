@@ -1,0 +1,99 @@
+---
+############### System ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - System
+      win_shell: |
+        try {
+          $startTime = (Get-Date).AddMinutes(-15)
+          $endTime = (Get-Date).AddMinutes(-5)
+          Get-WinEvent -FilterHashtable @{LogName='System'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+        } catch {
+          "Nenhum evento encontrado"
+        }
+      register: result_System
+      ignore_errors: yes
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_System.stdout_lines
+
+############### Security ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - Security
+      win_shell: |
+        try {
+          $startTime = (Get-Date).AddMinutes(-15)
+          $endTime = (Get-Date).AddMinutes(-5)
+          Get-WinEvent -FilterHashtable @{LogName='Security'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+        } catch {
+          "Nenhum evento encontrado"
+        }
+      register: result_Security
+      ignore_errors: yes
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_Security.stdout_lines
+
+############### Application ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - Application
+      win_shell: |
+        try {
+          $startTime = (Get-Date).AddMinutes(-15)
+          $endTime = (Get-Date).AddMinutes(-5)
+          Get-WinEvent -FilterHashtable @{LogName='Application'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+        } catch {
+          "Nenhum evento encontrado"
+        }
+      register: result_Application
+      ignore_errors: yes
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_Application.stdout_lines
+
+############### MyCustomLog ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - MyCustomLog
+      win_shell: |
+        try {
+          $startTime = (Get-Date).AddMinutes(-15)
+          $endTime = (Get-Date).AddMinutes(-5)
+          Get-WinEvent -FilterHashtable @{LogName='MyCustomLog'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+        } catch {
+          "Nenhum evento encontrado"
+          exit 0
+        }
+      register: result_MyCustomLog
+      ignore_errors: yes
+
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_MyCustomLog.stdout_lines
+
+############### Lista de usuarios logados ###############
+
+    - name: Listar usuários logados
+      win_shell: |
+        $logged_in_users = quser 2>&1
+        if ($logged_in_users -like 'No session*') {
+          echo "No users are currently logged in."
+        } else {
+          echo $logged_in_users
+        }
+      register: logged_in_users_result
+      changed_when: false
+
+    - name: Listar últimos usuários logados
+      win_shell: |
+        $last_logged_in_users = Get-WinEvent -LogName 'Security' -FilterXPath "*[System[(EventID=4624)]]" | 
+          ForEach-Object { $_.Properties[5].Value } | Select-Object -Unique
+        if ($last_logged_in_users.Count -eq 0) {
+          echo "No recent login events found."
+        } else {
+          echo $last_logged_in_users
+        }
+      register: last_logged_in_users_result
+      ignore_errors: yes
+
+    - name: Exibir usuários logados
+      debug:
+        var: logged_in_users_result.stdout_lines
