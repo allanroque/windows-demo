@@ -2,13 +2,51 @@
 - name: Coletar logs de eventos do servidor Windows
   hosts: windows
   tasks:
-    - name: Obter logs de eventos entre 09:55 e 10:05
+
+############### System ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - System
+      win_shell: |
+        $startTime = (Get-Date).AddMinutes(-15)
+        $endTime = (Get-Date).AddMinutes(-5)
+        Get-WinEvent -FilterHashtable @{LogName='System'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+      register: result_System
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_System.stdout_lines
+
+############### Security ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - Security
       win_shell: |
         $startTime = (Get-Date).AddMinutes(-15)
         $endTime = (Get-Date).AddMinutes(-5)
         Get-WinEvent -FilterHashtable @{LogName='Security'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
-      register: result
+      register: result_Security
 
     - name: Exibir logs coletados
       debug:
-        var: result.stdout_lines
+        var: result_Security.stdout_lines
+
+############### Application ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - Application
+      win_shell: |
+        $startTime = (Get-Date).AddMinutes(-15)
+        $endTime = (Get-Date).AddMinutes(-5)
+        Get-WinEvent -FilterHashtable @{LogName='Application'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+      register: result_Application
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_Application.stdout_lines
+
+############### MyCustomLog ###############
+    - name: Obter logs de eventos 5 min antes e 5 minutos depois do alerta - MyCustomLog
+      win_shell: |
+        $startTime = (Get-Date).AddMinutes(-15)
+        $endTime = (Get-Date).AddMinutes(-5)
+        Get-WinEvent -FilterHashtable @{LogName='MyCustomLog'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+      register: result_MyCustomLog
+
+    - name: Exibir logs coletados
+      debug:
+        var: result_MyCustomLog.stdout_lines
