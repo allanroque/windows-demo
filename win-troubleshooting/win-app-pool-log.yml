@@ -12,8 +12,9 @@
 
     - name: Obter status detalhado do pool de aplicativos
       win_shell: |
-        Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
+        Get-IISAppPool -Name MyAppPool1
       register: status_result
+      #        Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
 
     - name: Exibir status detalhado do pool de aplicativos
       debug:
