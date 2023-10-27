@@ -72,3 +72,32 @@
     - name: Exibir logs coletados
       debug:
         var: result_MyCustomLog.stdout_lines
+
+############### Lista de usuarios logados ###############
+
+    - name: Listar usuários logados
+      win_shell: |
+        $logged_in_users = quser 2>&1
+        if ($logged_in_users -like 'No session*') {
+          echo "No users are currently logged in."
+        } else {
+          echo $logged_in_users
+        }
+      register: logged_in_users_result
+      changed_when: false
+
+    - name: Listar últimos usuários logados
+      win_shell: |
+        $last_logged_in_users = Get-WinEvent -LogName 'Security' -FilterXPath "*[System[(EventID=4624)]]" | 
+          ForEach-Object { $_.Properties[5].Value } | Select-Object -Unique
+        if ($last_logged_in_users.Count -eq 0) {
+          echo "No recent login events found."
+        } else {
+          echo $last_logged_in_users
+        }
+      register: last_logged_in_users_result
+      ignore_errors: yes
+
+    - name: Exibir usuários logados
+      debug:
+        var: logged_in_users_result.stdout_lines

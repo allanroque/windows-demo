@@ -4,76 +4,10 @@
   gather_facts: no 
   tasks:
 
-########
-# Adicionar enriquecimento dos logs e informações, essas informações podem ser enviadas para o incidente
-# informacoes do incidente numero
-# usuarios logados
-# validar DNS
-#
-
-#    - name: Listar usuários logados
-#      win_shell: |
-#        quser
-#      register: logged_in_users
-
-    - name: Listar todos os logs de eventos
-      win_shell: Get-WinEvent -ListLog * 
-      register: event_logs_info
-      
-    - name: Get Event Logs Info
-      win_shell: Get-WinEvent -LogName 'System'
-      register: event_logs_info
-      changed_when: false
-
-    - name: Listar usuários logados
-      win_shell: |
-        $logged_in_users = quser 2>&1
-        if ($logged_in_users -like 'No session*') {
-          echo "No users are currently logged in."
-        } else {
-          echo $logged_in_users
-        }
-      register: logged_in_users_result
-      changed_when: false
-
-    - name: Listar últimos usuários logados
-      win_shell: |
-        $last_logged_in_users = Get-WinEvent -LogName 'Security' -FilterXPath "*[System[(EventID=4624)]]" | 
-          ForEach-Object { $_.Properties[5].Value } | Select-Object -Unique
-        if ($last_logged_in_users.Count -eq 0) {
-          echo "No recent login events found."
-        } else {
-          echo $last_logged_in_users
-        }
-      register: last_logged_in_users_result
-      failed_when: false  # Ignora erros se o log 'Security' não existir
-
-    - name: Exibir usuários logados
-      debug:
-        var: logged_in_users_result.stdout_lines
-
     - name: Get info for a single service
       ansible.windows.win_service_info:
         name: W3SVC
       register: service_info
-
-    - name: Listar todos os logs de eventos
-      win_shell: Get-WinEvent -ListLog *
-      register: event_logs_info
-
-    - name: Exibir informações dos logs de eventos
-      debug:
-        var: event_logs_info.stdout
-
-    - name: Coletar os últimos logs do sistema
-      win_shell: |
-        Get-WinEvent -LogName System -MaxEvents 10 | Format-Table -AutoSize
-      register: system_logs
-      changed_when: false  # Definir como false para que não marque como alterado
-
-    - name: Exibir os últimos logs do sistema
-      debug:
-        var: system_logs.stdout_lines
 
     - name: Start IIS Service
       win_service:
