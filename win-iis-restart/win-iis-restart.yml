@@ -43,7 +43,7 @@
           Status IIS ANTES da acao ANSIBLE: {{ service_info.services[0].state }}
           Status IIS APOS a acao ANSIBLE: {{ service_restart.state }}
           Numero do Alerta: {{ num_alerta }}
-          Jod de Automação no Automation Controller: {{ awx_job_id }}
+          Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
 
     - name: Exibir banner
