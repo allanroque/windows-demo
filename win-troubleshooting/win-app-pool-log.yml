@@ -27,10 +27,6 @@
         $status
       register: apppool_status_result
 
-    - name: Definir variável com status do pool de aplicativos
-      set_fact:
-        apppool_status: "{{ apppool_status_result.stdout_lines[2] }}"
-
     - name: Exibir status do pool de aplicativos
       debug:
         var: apppool_status
