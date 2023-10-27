@@ -15,11 +15,6 @@
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-eventlog.yml
 
-- name: Exibir aviso
-  debug:
-    msg: "Isto é um aviso"
-    verbosity: 1
-
     - name: Coleta as informações do servico W3SVC IIS 
       ansible.windows.win_service_info:
         name: W3SVC
