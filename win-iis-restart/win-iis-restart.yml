@@ -30,16 +30,20 @@
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-write-eventlog.yml
   
+    - name: Definir informações em uma variavel
+      set_facts:
+        status_automacao: |-
+          ################################################
+          #              STATUS DA ATIVIDADE             #
+          ################################################
+          Servidor Analisado/limits: {{ ansible_limit }}
+          Hostname servidor: {{ ansible_hostname }}
+          Versao do S.O: {{ ansible_os_name }}
+          Vendor: {{ ansible_system_vendor }}
+          Status IIS antes da acao: {{ service_info.services[0].state }}
+          Status IIS apos a acao: {{ service_restart.state }}
+          ################################################   
+
     - name: Exibir banner
       debug:
-        msg: |
-          - "################################################"
-          - "#              STATUS DA ATIVIDADE             #"
-          - "################################################"
-          - "Servidor Analisado/limits: {{ ansible_limit }}"
-          - "Hostname servidor: {{ ansible_hostname }}"
-          - "Versao do S.O: {{ ansible_os_name }}"
-          - 'Vendor: {{ ansible_system_vendor }}"
-          - "Status IIS antes da acao: {{ service_info.services[0].state }}"
-          - "Status IIS apos a acao: {{ service_restart.state }}""
-          - "################################################"
+        msg: "{{ status_automacao.split('\n') }}" 
