@@ -60,8 +60,10 @@
           Get-WinEvent -FilterHashtable @{LogName='MyCustomLog'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
         } catch {
           "Nenhum evento encontrado"
+          exit 0
         }
       register: result_MyCustomLog
+
 
     - name: Exibir logs coletados
       debug:
