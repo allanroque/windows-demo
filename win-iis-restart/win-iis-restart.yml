@@ -40,11 +40,11 @@
           Hostname servidor: {{ ansible_hostname }}
           Versao do S.O: {{ ansible_os_name }}
           Vendor: {{ ansible_system_vendor }}
-          Status IIS antes da acao: {{ service_info.services[0].state }}
-          Status IIS apos a acao: {{ service_restart.state }}
+          Status IIS ANTES da acao ANSIBLE: {{ service_info.services[0].state }}
+          Status IIS APOS a acao ANSIBLE: {{ service_restart.state }}
+          Numero do Alerta: {{ num_alerta }}
           ################################################   
 
     - name: Exibir banner
       debug:
         msg: "{{ status_automacao.split('\n') }}" 
-      vars:
