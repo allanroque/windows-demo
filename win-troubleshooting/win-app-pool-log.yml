@@ -26,9 +26,20 @@
       win_shell: |
         $pool = Get-IISAppPool -Name {{ apppool_name }}
         $status = Get-WebAppPoolState -Name {{ apppool_name }}
-        $pool | Select-Object Name, @{Name='Status'; Expression={$status.Value}}, Applications, ProcessModel, Recycling, Failure
+      register: status_result
+      #$pool | Select-Object Name, @{Name='Status'; Expression={$status.Value}}, Applications, ProcessModel, Recycling, Failure
+
+    - name: Obter status do pool de aplicativos
+      win_shell: |
+        $status = (Get-WebAppPoolState -Name MyAppPool1).Value
+        Set-Variable -Name PoolStatus -Value $status -Scope Global
+        $status
       register: status_result
 
+    - name: Definir variável com status do pool de aplicativos
+      set_fact:
+        pool_status: "{{ status_result.stdout_lines[2] }}"
+        
     - name: Exibir status do pool de aplicativos
       debug:
         var: status_result.stdout_lines
