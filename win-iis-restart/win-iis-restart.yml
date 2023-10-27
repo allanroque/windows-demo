@@ -32,17 +32,14 @@
   
     - name: Exibir banner
       debug:
-        msg: |
-          ################################################
-          #              STATUS DA ATIVIDADE             #
-          ################################################
-          Servidor Analisado/limits: {{ ansible_limit }}
-          Hostname servidor: {{ ansible_hostname }}
-          Versao do S.O: {{ ansible_os_name }}
-          Vendor: {{ ansible_system_vendor }}
-          Status IIS antes da acao: {{ service_info.services[0].state }}
-          Status IIS apos a acao: {{ service_restart.state }}
-
-
-          
-          ################################################
+        msg: 
+          - "################################################"
+          - "#              STATUS DA ATIVIDADE             #"
+          - "################################################"
+          - "Servidor Analisado/limits: {{ ansible_limit }}"
+          - "Hostname servidor: {{ ansible_hostname }}"
+          - "Versao do S.O: {{ ansible_os_name }}"
+          - 'Vendor: {{ ansible_system_vendor }}"
+          - "Status IIS antes da acao: {{ service_info.services[0].state }}"
+          - "Status IIS apos a acao: {{ service_restart.state }}""
+          - "################################################"
