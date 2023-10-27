@@ -10,11 +10,12 @@
       debug:
         var: result.stdout_lines
 
-    - name: Obter status do pool de aplicativos
-      win_shell: Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status
+    - name: Obter status detalhado do pool de aplicativos
+      win_shell: |
+        Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
       register: status_result
 
-    - name: Exibir status do pool de aplicativos
+    - name: Exibir status detalhado do pool de aplicativos
       debug:
         var: status_result.stdout_lines
 
