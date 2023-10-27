@@ -13,7 +13,7 @@
 # Comente ou remova o bloco abaixo caso nao utilize a coleta de logs
     - name: Chamada de automacao especifica para coleta de logs
       ansible.builtin.include_tasks:
-        file: win-troubleshooting/task-win-eventlog.yml
+        file: ../win-troubleshooting/task-win-eventlog.yml
 
     - name: Coleta as informações do servico W3SVC IIS 
       ansible.windows.win_service_info:
@@ -28,4 +28,4 @@
 
     - name: Chamada de automação para escrita de logs no windows
       ansible.builtin.include_tasks:
-        file: win-troubleshooting/task-win-eventlog.yml
+        file: ../win-troubleshooting/task-win-eventlog.yml
