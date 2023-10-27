@@ -1,0 +1,28 @@
+---
+- name: Coletar informacoes de app pools
+  hosts: windows
+  tasks:
+    - name: Obter lista de pools de aplicativos
+      win_shell: Get-IISAppPool | Select-Object Name, Status
+      register: result
+
+    - name: Exibir lista de pools de aplicativos
+      debug:
+        var: result.stdout_lines
+
+    - name: Obter status do pool de aplicativos
+      win_shell: Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status
+      register: status_result
+
+    - name: Exibir status do pool de aplicativos
+      debug:
+        var: status_result.stdout_lines
+
+    # Supondo que os logs estejam no caminho padrão
+    - name: Obter logs do pool de aplicativos
+      win_shell: Get-Content C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log -Tail 10
+      register: log_result
+
+    - name: Exibir logs do pool de aplicativos
+      debug:
+        var: log_result.stdout_lines
