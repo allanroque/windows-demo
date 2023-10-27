@@ -37,7 +37,8 @@
           #              STATUS DA ATIVIDADE             #
           ################################################
           Servidor Analisado: {{ ansible_limit }}
-
+          Versao do S.O: {{ ansible_os_name }}
+          Vendor: {{ ansible_system_vendor }}
           Status IIS antes da acao: {{ service_info.services[0].state }}
           Status IIS apos a acao: {{ service_restart.state }}
 
