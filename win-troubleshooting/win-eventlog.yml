@@ -1,0 +1,14 @@
+---
+- name: Coletar logs de eventos do servidor Windows
+  hosts: windows
+  tasks:
+    - name: Obter logs de eventos entre 09:55 e 10:05
+      win_shell: |
+        $startTime = (Get-Date).AddMinutes(-15)
+        $endTime = (Get-Date).AddMinutes(-5)
+        Get-WinEvent -FilterHashtable @{LogName='Security'; StartTime=$startTime; EndTime=$endTime} | Format-Table -Property TimeCreated, Id, Message -AutoSize | Out-String
+      register: result
+
+    - name: Exibir logs coletados
+      debug:
+        var: result.stdout_lines
