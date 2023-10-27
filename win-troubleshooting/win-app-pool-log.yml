@@ -29,7 +29,7 @@
 
     - name: Exibir status do pool de aplicativos
       debug:
-        var: apppool_status
+        var: apppool_status_result
 
     - name: Obter logs do pool de aplicativos
       win_shell: Get-Content C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log -Tail 10
