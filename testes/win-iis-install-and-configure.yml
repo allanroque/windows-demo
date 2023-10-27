@@ -26,6 +26,21 @@
       community.windows.win_iis_webapppool:
         name: MyAppPool
         state: present
+      
+    - name: Criar Pool de Aplicativos 1
+      community.windows.win_iis_webapppool:
+        name: MyAppPool1
+        state: present
+
+    - name: Criar Pool de Aplicativos 2
+      community.windows.win_iis_webapppool:
+        name: MyAppPool2
+        state: present
+
+    - name: Criar Pool de Aplicativos 3
+      community.windows.win_iis_webapppool:
+        name: MyAppPool3
+        state: present
  
     - name: Criar diretório do site
       win_file:

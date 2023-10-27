@@ -6,7 +6,7 @@
     iis: true
     eventlog_log: MyCustomLog
     eventlog_source: MyCustomLog
-    eventlog_msg: "Ansible Action - Restart IIS Web Server - Numero do Alerta {{ num_alerta }}"
+    eventlog_msg: "Ansible Action - Restart IIS Web Server - Numero do Alerta {{ num_alerta }} - Ansible Job {{ awx_job_id }}"
     num_alerta: "00000"
   tasks:
 
