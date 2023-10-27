@@ -14,6 +14,7 @@
           "Nenhum evento encontrado"
         }
       register: result_System
+      ignore_errors: yes
 
     - name: Exibir logs coletados
       debug:
@@ -30,6 +31,7 @@
           "Nenhum evento encontrado"
         }
       register: result_Security
+      ignore_errors: yes
 
     - name: Exibir logs coletados
       debug:
@@ -46,6 +48,7 @@
           "Nenhum evento encontrado"
         }
       register: result_Application
+      ignore_errors: yes
 
     - name: Exibir logs coletados
       debug:
@@ -63,6 +66,7 @@
           exit 0
         }
       register: result_MyCustomLog
+      ignore_errors: yes
 
 
     - name: Exibir logs coletados
