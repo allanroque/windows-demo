@@ -20,16 +20,16 @@
       debug:
         var: status_result.stdout_lines
 
-      - name: Obter status do pool de aplicativos
-        win_shell: |
-          $pool = Get-IISAppPool -Name MyAppPool1
-          $status = Get-WebAppPoolState -Name MyAppPool1
-          $pool | Select-Object Name, @{Name='Status'; Expression={$status.Value}}, Applications, ProcessModel, Recycling, Failure
-        register: status_result
+    - name: Obter status do pool de aplicativos
+      win_shell: |
+        $pool = Get-IISAppPool -Name MyAppPool1
+        $status = Get-WebAppPoolState -Name MyAppPool1
+        $pool | Select-Object Name, @{Name='Status'; Expression={$status.Value}}, Applications, ProcessModel, Recycling, Failure
+      register: status_result
 
-      - name: Exibir status do pool de aplicativos
-        debug:
-          var: status_result.stdout_lines
+    - name: Exibir status do pool de aplicativos
+      debug:
+        var: status_result.stdout_lines
 
     # Supondo que os logs estejam no caminho padrão
     - name: Obter logs do pool de aplicativos
