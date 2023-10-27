@@ -1,6 +1,8 @@
 ---
 - name: Coletar informacoes de app pools
   hosts: windows
+  vars:
+    apppool_name: MyAppPool1
   tasks:
     - name: Obter lista de pools de aplicativos
       win_shell: Get-IISAppPool | Select-Object Name, Status
@@ -12,9 +14,9 @@
 
     - name: Obter status detalhado do pool de aplicativos
       win_shell: |
-        Get-IISAppPool -Name MyAppPool1
+        Get-IISAppPool -Name {{ apppool_name }}
       register: status_result
-      #        Get-IISAppPool -Name MyAppPool1 | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
+      #        Get-IISAppPool -Name {{ apppool_name }} | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
 
     - name: Exibir status detalhado do pool de aplicativos
       debug:
@@ -22,8 +24,8 @@
 
     - name: Obter status do pool de aplicativos
       win_shell: |
-        $pool = Get-IISAppPool -Name MyAppPool1
-        $status = Get-WebAppPoolState -Name MyAppPool1
+        $pool = Get-IISAppPool -Name {{ apppool_name }}
+        $status = Get-WebAppPoolState -Name {{ apppool_name }}
         $pool | Select-Object Name, @{Name='Status'; Expression={$status.Value}}, Applications, ProcessModel, Recycling, Failure
       register: status_result
 
