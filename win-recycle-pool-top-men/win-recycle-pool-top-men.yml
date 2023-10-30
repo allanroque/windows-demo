@@ -110,7 +110,7 @@
           Numero do Alerta: {{ num_alerta }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
-      when: not kill_process_top_memory.skipped #false
+      when: kill_process_top_memory.skipped
 
     - name: Definir informações em uma variavel 
       set_fact:
@@ -130,7 +130,7 @@
           Numero do Alerta: {{ num_alerta }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
-      when: kill_process_top_memory.skipped #true
+      when: not kill_process_top_memory.skipped #true
 
     - name: Exibir banner
       debug:
