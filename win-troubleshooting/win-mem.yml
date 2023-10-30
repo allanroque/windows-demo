@@ -1,17 +1,21 @@
 ---
 - name: Coleta de memoria dos servidores windows
   hosts: windows
-  gather_facts: False #a automacao nao utiliza facts do servidor durante a execucao
+  gather_facts: False
   tasks:
-
     - name: Obter informações de Memória 
       win_shell: |
         $memoryInfo = Get-CimInstance -ClassName Win32_OperatingSystem
-        $memoryUsed = $memoryInfo.TotalVisibleMemorySize - $memoryInfo.FreePhysicalMemory
-        $memoryUsage = [math]::Round(($memoryUsed / $memoryInfo.TotalVisibleMemorySize) * 100, 2)
+        $totalMemory = $memoryInfo.TotalVisibleMemorySize
+        $freeMemory = $memoryInfo.FreePhysicalMemory
+        $memoryUsed = $totalMemory - $freeMemory
+        $memoryUsagePercent = [math]::Round(($memoryUsed / $totalMemory) * 100, 2)
 
         $info = @{
-          memory_usage_percent = $memoryUsage
+          total_memory = $totalMemory
+          free_memory = $freeMemory
+          memory_used = $memoryUsed
+          memory_usage_percent = $memoryUsagePercent
         }
 
         $infoJson = $info | ConvertTo-Json
@@ -21,44 +25,54 @@
 
     - name: Extrair informações de Memória
       set_fact:
+        total_memory: "{{ (system_info.stdout | from_json).total_memory }}"
+        free_memory: "{{ (system_info.stdout | from_json).free_memory }}"
+        memory_used: "{{ (system_info.stdout | from_json).memory_used }}"
         primeira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
 
-    - name: Exibir informações de Memória
-      debug:
-        var: primeira_memory_usage_percent
+    - name: Listar os 10 processos que mais consomem memória
+      win_shell: |
+        Get-Process | Sort-Object WS -Descending | Select-Object -First 10 | Format-Table Name, WS -AutoSize | Out-String
+      register: top_10_memory_processes
 
-    - name: Get process ID ##Esta task obtém o ID do processo 'w3wp' (IIS Worker Process) com a maior utilização de memória e Registra a saída na variável output_id_w3wp
+    - name: Exibir os 10 processos que mais consomem memória
+      debug:
+        var: top_10_memory_processes.stdout_lines
+
+    - name: Listar os 5 processos que mais consomem memória
+      win_shell: |
+        Get-Process | Sort-Object WS -Descending | Select-Object -First 5 | Format-Table Name, WS -AutoSize | Out-String
+      register: top_5_memory_processes
+
+    - name: Exibir os 5 processos que mais consomem memória
+      debug:
+        var: top_5_memory_processes.stdout_lines
+
+    - name: Listar os 3 processos que mais consomem memória
+      win_shell: |
+        Get-Process | Sort-Object WS -Descending | Select-Object -First 3 | Format-Table Name, WS -AutoSize | Out-String
+      register: top_3_memory_processes
+
+    - name: Exibir os 3 processos que mais consomem memória
+      debug:
+        var: top_3_memory_processes.stdout_lines
+
+    - name: Get process ID
       win_shell: |
         $id = (get-process  | where { $_.Name -eq 'w3wp'} | Sort-Object  -Property WS | Select-Object -Last 1).id
         echo $id
       register: output_id_w3wp
-      ignore_errors: true  # Ignora erros caso não seja encontrado nenhum processo 'w3wp'.
+      ignore_errors: true
 
-    - name: Get process w3wp #Loop através da saída para obter informações dos processos w3wp
+    - name: Get process w3wp
       win_command: c:\windows\system32\inetsrv\appcmd.exe list wp {{ item }}
       with_items: 
           - "{{ output_id_w3wp.stdout_lines }}"
-      ignore_errors: true # Ignora erros caso não seja possível obter informações dos processos 'w3wp'.
+      ignore_errors: true
 
-    - name: Get user Sessions # exibir informações sobre todos os usuários conectados ao sistema
+    - name: Get user Sessions
       win_shell: |
         quser 
       register: quser_out
       ignore_errors: true
-
-    # Esta tarefa encerra sessões de usuário desconectadas no Windows Server 2012 e Windows Server 2016/2019
-    - name: Kill Disconnect Sessions RDP 2012 # identificar sessões de usuário desconectadas (indicadas pelo "Disc") e, em seguida, encerrá-las usando o comando logoff
-      win_shell: |
-        quser | Select-Object -Skip 1 | select-string "Disc"| ForEach-Object {
-            $id = ($_ -split ' +')[-6]
-            logoff $id
-        }
-      ignore_errors: true
-
-    - name: Kill Disconnect Sessions RDP 2016/2019 # identificar sessões de usuário desconectadas (indicadas pelo "Disc") e, em seguida, encerrá-las usando o comando logoff
-      win_shell: |
-        quser | Select-Object -Skip 1 | select-string "Disc"| ForEach-Object {
-            $id = ($_ -split ' +')[-5]
-            logoff $id
-        }
-      ignore_errors: true
+...
