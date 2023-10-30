@@ -28,11 +28,13 @@
         total_memory: "{{ (system_info.stdout | from_json).total_memory }}"
         free_memory: "{{ (system_info.stdout | from_json).free_memory }}"
         memory_used: "{{ (system_info.stdout | from_json).memory_used }}"
+        memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
         primeira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
+
 
     - name: informações de Memória
       debug:
-        msg: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }}"
+        msg: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }} - memory_usage_percent: {{ memory_usage_percent }}"
 
     - name: Listar os 10 processos que mais consomem memória no sistema - Geral
       win_shell: |
