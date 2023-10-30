@@ -30,6 +30,7 @@
     - name: Chamada de automação para escrita de logs no windows
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-write-eventlog.yml
+        
     - name: Definindo numero do produto
       set_fact:
         num_produto: "{{ ansible_hostname | regex_search('(\\d+)(?!.*\\d)') }}"

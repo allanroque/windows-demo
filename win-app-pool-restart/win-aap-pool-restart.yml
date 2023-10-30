@@ -19,7 +19,7 @@
 
     - name: Chamada de automacao especifica para coleta de logs app pool
       ansible.builtin.include_tasks:
-        file: ../win-troubleshooting/task-win-eventlog.yml
+        file: ../win-troubleshooting/task-win-app-pool-log.yml
 
 ### ANTES
     - name: Obter status do pool de aplicativos antes da automacao
