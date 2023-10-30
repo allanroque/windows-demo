@@ -30,32 +30,18 @@
         memory_used: "{{ (system_info.stdout | from_json).memory_used }}"
         primeira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
 
-    - name: Listar os 10 processos que mais consomem memória
+    - name: informações de Memória
+      debug:
+        megs: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }}"
+
+    - name: Listar os 10 processos que mais consomem memória no sistema - Geral
       win_shell: |
         Get-Process | Sort-Object WS -Descending | Select-Object -First 10 | Format-Table Name, WS -AutoSize | Out-String
       register: top_10_memory_processes
 
-    - name: Exibir os 10 processos que mais consomem memória
+    - name: Exibir os 10 processos que mais consomem memória no sistema - Geral
       debug:
         var: top_10_memory_processes.stdout_lines
-
-    - name: Listar os 5 processos que mais consomem memória
-      win_shell: |
-        Get-Process | Sort-Object WS -Descending | Select-Object -First 5 | Format-Table Name, WS -AutoSize | Out-String
-      register: top_5_memory_processes
-
-    - name: Exibir os 5 processos que mais consomem memória
-      debug:
-        var: top_5_memory_processes.stdout_lines
-
-    - name: Listar os 3 processos que mais consomem memória
-      win_shell: |
-        Get-Process | Sort-Object WS -Descending | Select-Object -First 3 | Format-Table Name, WS -AutoSize | Out-String
-      register: top_3_memory_processes
-
-    - name: Exibir os 3 processos que mais consomem memória
-      debug:
-        var: top_3_memory_processes.stdout_lines
 
     - name: Get process ID
       win_shell: |
