@@ -10,7 +10,7 @@
     num_alerta: "00000"
   tasks:
 
-# Comente ou remova o bloco abaixo caso nao utilize a coleta de logs
+# Comente ou remova o bloco abaixo caso nao utilize a coleta de logs geral
     - name: Chamada de automacao especifica para coleta de logs
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-eventlog.yml

@@ -1,0 +1,38 @@
+---
+    - name: Obter lista de pools de aplicativos
+      win_shell: Get-IISAppPool | Select-Object Name, Status
+      register: apppool_list_result
+
+    - name: Exibir lista de pools de aplicativos
+      debug:
+        var: apppool_list_result.stdout_lines
+
+    - name: Obter detalhes do pool de aplicativos
+      win_shell: |
+        Get-IISAppPool -Name {{ apppool_name }} | Select-Object Name, Status, Applications, ProcessModel, Recycling, Failure
+      register: apppool_detail_result
+
+    - name: Exibir detalhes do pool de aplicativos
+      debug:
+        var: apppool_detail_result.stdout_lines
+
+  # Automação migrada para playbook principal
+  #  - name: Obter status do pool de aplicativos
+  #    win_shell: |
+  #      $status = (Get-WebAppPoolState -Name {{ apppool_name }}).Value
+  #      $status
+  #    register: apppool_status_result
+
+  #  - name: Exibir status do pool de aplicativos
+  #    debug:
+  #      var: apppool_status_result.stdout_lines
+
+    - name: Obter logs do pool de aplicativos
+      win_shell: Get-Content C:\inetpub\logs\LogFiles\W3SVC1\u_ex*.log -Tail 10
+      register: apppool_log_result
+      ignore_errors: yes
+
+    - name: Exibir logs do pool de aplicativos
+      debug:
+        var: apppool_log_result.stdout_lines
+      ignore_errors: yes
