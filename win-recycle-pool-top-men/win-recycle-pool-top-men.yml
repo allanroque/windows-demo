@@ -107,6 +107,7 @@
           Vendor: {{ ansible_system_vendor }}
           Status Consumo memoria em uso ANTES da acao ANSIBLE: {{ primeira_memory_usage_percent }}%
           Status Consumo memoria em uso Apos kill dos processo RDP: {{ segunda_memory_usage_percent }}%
+          Necessario kill dos processo de w3wp: {{ kill_process_top_memory.changed }}
           Numero do Alerta: {{ num_alerta }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
