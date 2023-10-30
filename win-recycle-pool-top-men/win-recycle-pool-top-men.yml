@@ -1,6 +1,6 @@
 ---
 - name: Reciclagem Pool - Maior ofensor Memory
-  hosts: windows
+  hosts: all
   gather_facts: yes
   vars:
     iis: true

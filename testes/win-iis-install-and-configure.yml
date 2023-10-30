@@ -3,7 +3,7 @@
 ###############################
 ---
 - name: Instalação e Configuração do IIS
-  hosts: windows
+  hosts: all
   vars:
     apache_test_message: "Ansible!!!!"
   tasks:

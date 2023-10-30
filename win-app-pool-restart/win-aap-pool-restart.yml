@@ -1,6 +1,6 @@
 ---
 - name: restart pool
-  hosts: windows
+  hosts: all
   gather_facts: true
   vars:
     apppool: true
