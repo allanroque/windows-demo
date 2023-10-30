@@ -96,6 +96,7 @@
 
     - name: Definir informações em uma variavel 
       set_fact:
+        kill_processo_w3wp: {{ kill_process_top_memory.changed }}
         status_automacao: |-
           ################################################
           #              STATUS DA ATIVIDADE             #
