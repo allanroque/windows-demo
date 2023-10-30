@@ -34,7 +34,7 @@
 
     - name: Return information about an existing application pool
       community.windows.win_iis_webapppool:
-        name: "{{ apppool_name: }}"
+        name: "{{ apppool_name }}"
       register: apppool_restart
 
 ### DEPOIS
