@@ -32,7 +32,7 @@
 
     - name: informações de Memória
       debug:
-        megs: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }}"
+        msg: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }}"
 
     - name: Listar os 10 processos que mais consomem memória no sistema - Geral
       win_shell: |
