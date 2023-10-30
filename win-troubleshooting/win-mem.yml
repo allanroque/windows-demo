@@ -22,9 +22,6 @@
         Write-Host $infoJson
       register: system_info
       changed_when: false
-      tags:
-        - memory_report
-
     - name: Extrair informações de Memória
       set_fact:
         total_memory: "{{ (system_info.stdout | from_json).total_memory }}"
@@ -38,35 +35,6 @@
     - name: informações de Memória
       debug:
         msg: "total_memory: {{ total_memory }} - free_memory: {{ free_memory }} - memory_used: {{ memory_used }} - memory_usage_percent: {{ memory_usage_percent }}"
-      tags:
-        - memory_report
 
-    - name: Listar os 10 processos que mais consomem memória no sistema - Geral
-      win_shell: |
-        Get-Process | Sort-Object WS -Descending | Select-Object -First 10 | Format-Table Name, WS -AutoSize | Out-String
-      register: top_10_memory_processes
-
-    - name: Exibir os 10 processos que mais consomem memória no sistema - Geral
-      debug:
-        var: top_10_memory_processes.stdout_lines
-
-    - name: Get process ID
-      win_shell: |
-        $id = (get-process  | where { $_.Name -eq 'w3wp'} | Sort-Object  -Property WS | Select-Object -Last 1).id
-        echo $id
-      register: output_id_w3wp
-      ignore_errors: true
-
-    - name: Get process w3wp
-      win_command: c:\windows\system32\inetsrv\appcmd.exe list wp {{ item }}
-      with_items: 
-          - "{{ output_id_w3wp.stdout_lines }}"
-      ignore_errors: true
-
-    - name: Get user Sessions
-      win_shell: |
-        quser 
-      register: quser_out
-      ignore_errors: true
 ...
 
