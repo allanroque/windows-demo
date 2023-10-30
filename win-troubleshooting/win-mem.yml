@@ -1,0 +1,122 @@
+---
+- name: Coleta de memoria dos servidores windows
+  hosts: all
+  gather_facts: False #a automacao nao utiliza facts do servidor durante a execucao
+  tasks:
+
+    - name: Obter informações de Memória 
+      win_shell: |
+        $memoryInfo = Get-CimInstance -ClassName Win32_OperatingSystem
+        $memoryUsed = $memoryInfo.TotalVisibleMemorySize - $memoryInfo.FreePhysicalMemory
+        $memoryUsage = [math]::Round(($memoryUsed / $memoryInfo.TotalVisibleMemorySize) * 100, 2)
+
+        $info = @{
+          memory_usage_percent = $memoryUsage
+        }
+
+        $infoJson = $info | ConvertTo-Json
+        Write-Host $infoJson
+      register: system_info
+      changed_when: false
+
+    - name: Extrair informações de Memória
+      set_fact:
+        primeira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
+
+    - name: Exibir informações de Memória
+      debug:
+        var: primeira_memory_usage_percent
+
+    - name: Get process ID ##Esta task obtém o ID do processo 'w3wp' (IIS Worker Process) com a maior utilização de memória e Registra a saída na variável output_id_w3wp
+      win_shell: |
+        $id = (get-process  | where { $_.Name -eq 'w3wp'} | Sort-Object  -Property WS | Select-Object -Last 1).id
+        echo $id
+      register: output_id_w3wp
+      ignore_errors: true  # Ignora erros caso não seja encontrado nenhum processo 'w3wp'.
+
+    - name: Get process w3wp #Loop através da saída para obter informações dos processos w3wp
+      win_command: c:\windows\system32\inetsrv\appcmd.exe list wp {{ item }}
+      with_items: 
+          - "{{ output_id_w3wp.stdout_lines }}"
+      ignore_errors: true # Ignora erros caso não seja possível obter informações dos processos 'w3wp'.
+
+    - name: Get user Sessions # exibir informações sobre todos os usuários conectados ao sistema
+      win_shell: |
+        quser 
+      register: quser_out
+      ignore_errors: true
+
+    # Esta tarefa encerra sessões de usuário desconectadas no Windows Server 2012 e Windows Server 2016/2019
+    - name: Kill Disconnect Sessions RDP 2012 # identificar sessões de usuário desconectadas (indicadas pelo "Disc") e, em seguida, encerrá-las usando o comando logoff
+      win_shell: |
+        quser | Select-Object -Skip 1 | select-string "Disc"| ForEach-Object {
+            $id = ($_ -split ' +')[-6]
+            logoff $id
+        }
+      ignore_errors: true
+
+    - name: Kill Disconnect Sessions RDP 2016/2019 # identificar sessões de usuário desconectadas (indicadas pelo "Disc") e, em seguida, encerrá-las usando o comando logoff
+      win_shell: |
+        quser | Select-Object -Skip 1 | select-string "Disc"| ForEach-Object {
+            $id = ($_ -split ' +')[-5]
+            logoff $id
+        }
+      ignore_errors: true      
+
+############################################################
+##### Task para analise de utilizacao de memoria apos kill dos processo de RDP e identificar se faz sentido realizar o kill dos processo w3wp
+# essa ação pode melhora a experiencia de selfhealing ao mesmo tempo que aumenta a disponibilidade dos servico
+############################################################
+    - name: Obter informações de Memória 
+      win_shell: |
+        $memoryInfo = Get-CimInstance -ClassName Win32_OperatingSystem
+        $memoryUsed = $memoryInfo.TotalVisibleMemorySize - $memoryInfo.FreePhysicalMemory
+        $memoryUsage = [math]::Round(($memoryUsed / $memoryInfo.TotalVisibleMemorySize) * 100, 2)
+
+        $info = @{
+          memory_usage_percent = $memoryUsage
+        }
+
+        $infoJson = $info | ConvertTo-Json
+        Write-Host $infoJson
+      register: system_info
+      changed_when: false
+
+    - name: Extrair informações de Memória
+      set_fact:
+        segunda_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
+
+    - name: Exibir informações de Memória
+      debug:
+        var: segunda_memory_usage_percent
+
+    - name: Kill process - top memory # Esta tarefa encerra o processo 'w3wp' com a maior utilização de memória.
+      win_shell: |
+        $id = (get-process  | where { $_.Name -eq 'w3wp'} | Sort-Object  -Property WS | Select-Object -Last 1).id
+        Kill $id -Force
+
+############################################################
+############################################################
+
+    - name: Obter informações de Memória 
+      win_shell: |
+        $memoryInfo = Get-CimInstance -ClassName Win32_OperatingSystem
+        $memoryUsed = $memoryInfo.TotalVisibleMemorySize - $memoryInfo.FreePhysicalMemory
+        $memoryUsage = [math]::Round(($memoryUsed / $memoryInfo.TotalVisibleMemorySize) * 100, 2)
+
+        $info = @{
+          memory_usage_percent = $memoryUsage
+        }
+
+        $infoJson = $info | ConvertTo-Json
+        Write-Host $infoJson
+      register: system_info
+      changed_when: false
+
+    - name: Extrair informações de Memória
+      set_fact:
+        terceira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
+
+    - name: Exibir informações de Memória
+      debug:
+        var: terceira_memory_usage_percent
