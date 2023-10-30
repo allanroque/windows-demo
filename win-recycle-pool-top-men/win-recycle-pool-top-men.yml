@@ -87,12 +87,12 @@
     - name: Chamada de automacao especifica para coleta de informacoes de memoria # essa automacacao sera executada se a memoria em uso estiver acima de 70%
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-mem.yml
-      when: not kill_process_top_memory.skipped #false
+      when: kill_process_top_memory.changed #true
 
     - name: Definir dados da terceira coleta de utilizacao de memoria # essa automacacao sera executada se a memoria em uso estiver acima de 70%
       set_fact:
         terceira_memory_usage_percent: "{{ (system_info.stdout | from_json).memory_usage_percent }}"
-        when: not kill_process_top_memory.skipped #false
+        when: kill_process_top_memory.changed #true
 
     - name: Definir informações em uma variavel 
       set_fact:
@@ -111,7 +111,7 @@
           Numero do Alerta: {{ num_alerta }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
-      when: kill_process_top_memory.skipped
+      when: not kill_process_top_memory.changed #false
 
     - name: Definir informações em uma variavel 
       set_fact:
@@ -131,7 +131,7 @@
           Numero do Alerta: {{ num_alerta }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
-      when: not kill_process_top_memory.skipped #true
+      when: kill_process_top_memory.changed #true
 
     - name: Exibir banner
       debug:
