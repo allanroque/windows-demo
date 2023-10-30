@@ -8,7 +8,7 @@
     eventlog_source: MyCustomLog
     eventlog_msg: "Ansible Action - Restart IIS Web Server - Numero do Alerta {{ num_alerta }} - Ansible Job {{ awx_job_id }}"
     num_alerta: "00000"
-    memory_limit: 70
+    memory_limit: 5
   tasks:
 
     - name: Chamada de automacao especifica para coleta de informacoes de memoria
