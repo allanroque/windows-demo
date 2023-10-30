@@ -8,6 +8,7 @@
     eventlog_source: MyCustomLog
     eventlog_msg: "Ansible Action - Restart IIS Web Server - Numero do Alerta {{ num_alerta }} - Ansible Job {{ awx_job_id }}"
     num_alerta: "00000"
+    num_produto: "00000"
   tasks:
 
 # Comente ou remova o bloco abaixo caso nao utilize a coleta de logs geral
@@ -29,7 +30,10 @@
     - name: Chamada de automação para escrita de logs no windows
       ansible.builtin.include_tasks:
         file: ../win-troubleshooting/task-win-write-eventlog.yml
-  
+    - name: Definindo numero do produto
+      set_fact:
+        num_produto: "{{ ansible_hostname | regex_search('(\\d+)(?!.*\\d)') }}"
+
     - name: Definir informações em uma variavel
       set_fact:
         status_automacao: |-
@@ -43,6 +47,7 @@
           Status IIS ANTES da acao ANSIBLE: {{ service_info.services[0].state }}
           Status IIS APOS a acao ANSIBLE: {{ service_restart.state }}
           Numero do Alerta: {{ num_alerta }}
+          Numero do produto: {{ num_produto }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
 

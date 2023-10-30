@@ -9,6 +9,7 @@
     eventlog_source: MyCustomLog
     eventlog_msg: "Ansible Action - Restart app pool {{ apppool_name }} - Numero do Alerta {{ num_alerta }} - Ansible Job {{ awx_job_id }}"
     num_alerta: "00000"
+    num_produto: "00000"
   tasks:
 
 # Comente ou remova o bloco abaixo caso nao utilize a coleta de logs
@@ -49,6 +50,10 @@
       debug:
         var: depois_apppool_status_result.stdout_lines
 
+    - name: Definindo numero do produto
+      set_fact:
+        num_produto: "{{ ansible_hostname | regex_search('(\\d+)(?!.*\\d)') }}"
+
     - name: Definir informações em uma variavel
       set_fact:
         status_automacao: |-
@@ -63,6 +68,7 @@
           Status APP POOL ANTES da acao ANSIBLE: {{ antes_apppool_status_result.stdout_lines }}
           Status IIS APOS a acao ANSIBLE: {{ depois_apppool_status_result.stdout_lines }}
           Numero do Alerta: {{ num_alerta }}
+          Numero do produto: {{ num_produto }}
           Jod da Automação no Automation Controller: {{ awx_job_id }}
           ################################################   
 
