@@ -1,8 +1,4 @@
 ---
-- name: Coleta de memoria dos servidores windows
-  hosts: windows
-  gather_facts: False
-  tasks:
     - name: Obter informações de Memória 
       win_shell: |
         $memoryInfo = Get-CimInstance -ClassName Win32_OperatingSystem
