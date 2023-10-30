@@ -27,14 +27,15 @@
         $status
       register: antes_apppool_status_result
 
-### AUTOMACAO
     - name: Exibir status do pool de aplicativos antes da automacao
       debug:
         var: antes_apppool_status_result.stdout_lines
 
+### AUTOMACAO
     - name: Return information about an existing application pool
       community.windows.win_iis_webapppool:
         name: "{{ apppool_name }}"
+        state: restarted
       register: apppool_restart
 
 ### DEPOIS
